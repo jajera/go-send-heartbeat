@@ -2,9 +2,65 @@
   "name": "Golang Development Container Template",
   "dockerFile": "Dockerfile",
 
+  "containerEnv": {
+    "AWS_CONFIG_FILE": "/root/.aws/config",
+    "AWS_SHARED_CREDENTIALS_FILE": "/root/.aws/credentials",
+    "AWS_VAULT_BACKEND": "file"
+  },
+
+  "mounts": [
+    "source=${localEnv:HOME}/.aws,target=/root/.aws,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.awsvault,target=/root/.awsvault,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.awsvaultk,target=/root/.awsvaultk,type=bind,consistency=cached,readonly=true"
+  ],
+
   "customizations": {
+    "settings": {
+      "files.eol": "\n",
+      "editor.formatOnSave": true,
+      "go.buildTags": "",
+      "go.toolsEnvVars": {
+        "CGO_ENABLED": "0"
+      },
+      "go.useLanguageServer": true,
+      "go.testEnvVars": {
+        "CGO_ENABLED": "1"
+      },
+      "go.testFlags": ["-v", "-race"],
+      "go.testTimeout": "10s",
+      "go.coverOnSingleTest": true,
+      "go.coverOnSingleTestFile": true,
+      "go.coverOnTestPackage": true,
+      "go.lintTool": "golangci-lint",
+      "go.lintOnSave": "package",
+      "[go]": {
+        "editor.codeActionsOnSave": {
+          "source.organizeImports": "always"
+        }
+      },
+      "gopls": {
+        "usePlaceholders": false,
+        "staticcheck": true
+      },
+      "remote.extensionKind": {
+        "ms-azuretools.vscode-docker": "workspace"
+      }
+    },
     "vscode": {
-      "extensions": ["golang.go", "streetsidesoftware.code-spell-checker"]
+      "extensions": [
+        "golang.go",
+        "davidanson.vscode-markdownlint",
+        "esbenp.prettier-vscode",
+        "eamodio.gitlens",
+        "Gruntfuggly.todo-tree",
+        "ms-azuretools.vscode-docker",
+        "streetsidesoftware.code-spell-checker",
+        "vscode-icons-team.vscode-icons",
+        "hashicorp.terraform"
+      ],
+      "settings": {
+        "workbench.iconTheme": "vscode-icons"
+      }
     }
   },
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
