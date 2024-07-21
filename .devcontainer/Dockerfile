@@ -5,5 +5,20 @@ RUN apt-get update -y \
 
 ENV GO111MODULE=on
 
-RUN go install golang.org/x/tools/gopls@v0.12.3 \
-  && go install golang.org/x/telemetry/cmd/gotelemetry@v0.0.0-20240614130327-d92499019833
+RUN go install golang.org/x/tools/gopls@v0.16.1 \
+  && go install golang.org/x/telemetry/cmd/gotelemetry@v0.0.0-20240614130327-d92499019833 \
+  # awscli
+  && apt-get install -y awscli \
+  # aws-vault
+  && curl -L -o /usr/local/bin/aws-vault https://github.com/99designs/aws-vault/releases/latest/download/aws-vault-linux-amd64 \
+  && chmod 755 /usr/local/bin/aws-vault \
+  # terraform
+  && apt-get install -y apt-utils gnupg software-properties-common \
+  && curl -s https://apt.releases.hashicorp.com/gpg | gpg --dearmor > hashicorp.gpg \
+  && install -o root -g root -m 644 hashicorp.gpg /etc/apt/trusted.gpg.d/ \
+  && apt-add-repository -y "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main" \
+  && apt-get update -y \
+  && apt-get install -y terraform \
+  && rm hashicorp.gpg \
+  # misc
+  && apt-get install -y zip
